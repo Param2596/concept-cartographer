@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concept Cartographer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/mindmap.css">
+    <!-- <script src="js/storage.js"></script>
+    <script src="js/concept-extractor.js"></script>
+    <script src="js/mindmap-renderer.js"></script>
+    <script src="js/app.js"></script> -->
+    <link rel="icon" href="assets/icons/favicon.svg">
+</head>
+<body>
+    <header>
+        <h1>Concept Cartographer</h1>
+        <p>Paste text to visualize key concepts as an interactive mind map</p>
+    </header>
+
+    <main>
+        <div class="input-section">
+            <textarea id="text-input" placeholder="Paste your text here (lecture notes, study material, etc.)..."></textarea>
+            <div class="button-row">
+                <button id="process-btn">Generate Mind Map</button>
+                <button id="clear-btn">Clear</button>
+                <button id="save-btn">Save Map</button>
+                <button id="load-btn">Load Saved Map</button>
+            </div>
+            <div class="options">
+                <label>
+                    <input type="checkbox" id="use-ai" checked>
+                    Use basic NLP (works offline)
+                </label>
+                <div class="separator"></div>
+                <select id="saved-maps" disabled>
+                    <option value="">-- Select saved map --</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="output-section">
+            <div id="mindmap-container">
+                <svg id="mindmap"></svg>
+                <div id="loading" class="hidden">Extracting concepts...</div>
+            </div>
+            <div class="controls">
+                <div class="zoom-controls">
+                    <button id="zoom-in">+</button>
+                    <button id="zoom-out">-</button>
+                    <button id="zoom-reset">Reset</button>
+                </div>
+                <div class="node-controls hidden" id="node-controls">
+                    <h3>Edit Node</h3>
+                    <input type="text" id="node-label">
+                    <button id="update-node">Update</button>
+                    <button id="delete-node">Delete</button>
+                    <button id="add-connection">Add Connection</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="connection-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Create Connection</h3>
+            <p>Select node to connect to:</p>
+            <select id="target-node"></select>
+            <p>Relationship type:</p>
+            <select id="connection-type">
+                <option value="related">Related to</option>
+                <option value="causes">Causes</option>
+                <option value="part-of">Part of</option>
+                <option value="example">Example of</option>
+                <option value="prerequisite">Prerequisite for</option>
+            </select>
+            <div class="button-row">
+                <button id="create-connection">Create</button>
+                <button id="cancel-connection">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Concept Cartographer - A local-first web app for visualizing concepts</p>
+    </footer>
+
+    <script src="js/storage.js"></script>
+    <script src="js/concept-extractor.js"></script>
+    <script src="js/mindmap-renderer.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
