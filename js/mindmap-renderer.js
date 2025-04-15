@@ -26,7 +26,7 @@ const MindMapRenderer = (function() {
     };
     
     // Node styles
-    const NODE_RADIUS = 60;
+    let NODE_RADIUS = 60; // Changed from const to let to allow dynamic sizing
     const NODE_STROKE_WIDTH = 3;
     const NODE_DEFAULT_COLOR = '#34495E';
     const NODE_SELECTED_COLOR = '#E74C3C';
@@ -93,13 +93,42 @@ const MindMapRenderer = (function() {
         
         // Create force simulation
         simulation = d3.forceSimulation()
-            .force('link', d3.forceLink().id(d => d.id).distance(150))
+            .force('link', d3.forceLink().id(d => d.id).distance(NODE_RADIUS * 2.5))
             .force('charge', d3.forceManyBody().strength(-500))
             .force('center', d3.forceCenter(
                 svgElement.clientWidth / 2, 
                 svgElement.clientHeight / 2
             ))
             .force('collision', d3.forceCollide().radius(NODE_RADIUS * 1.2));
+    }
+    
+    // Set bubble size
+    function setBubbleSize(radius) {
+        NODE_RADIUS = parseInt(radius);
+        
+        // Update markers
+        svg.selectAll('defs marker')
+            .attr('refX', NODE_RADIUS + 10);
+        
+        // Update simulation forces
+        if (simulation) {
+            simulation
+                .force('link', d3.forceLink().id(d => d.id).distance(NODE_RADIUS * 2.5))
+                .force('collision', d3.forceCollide().radius(NODE_RADIUS * 1.2));
+            
+            // Update existing nodes
+            container.selectAll('.node circle')
+                .attr('r', NODE_RADIUS);
+                
+            // Update node text wrapping
+            container.selectAll('.node text')
+                .call(wrapText, NODE_RADIUS * 1.5);
+            
+            // Restart simulation if we have nodes
+            if (nodes.length > 0) {
+                simulation.alpha(0.3).restart();
+            }
+        }
     }
     
     // Render the mind map
@@ -475,6 +504,7 @@ const MindMapRenderer = (function() {
         removeLink,
         zoom,
         resetZoom,
-        exportData
+        exportData,
+        setBubbleSize // New function for bubble size control
     };
 })();

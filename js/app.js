@@ -275,3 +275,64 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// Update the fullscreen toggle functionality part at the end of the file
+
+// Fullscreen toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Setup fullscreen toggle
+    const fullscreenToggle = document.getElementById('fullscreen-toggle');
+    const fullscreenExit = document.getElementById('fullscreen-exit');
+    const mindmapContainer = document.getElementById('mindmap-container');
+    
+    function enterFullscreen() {
+        mindmapContainer.classList.add('fullscreen');
+        fullscreenToggle.textContent = '⛶';
+        fullscreenToggle.title = 'Exit fullscreen';
+        
+        // Redraw the mindmap to fit the new container size
+        const svg = document.getElementById('mindmap');
+        MindMapRenderer.init(svg);
+        MindMapRenderer.render({nodes: MindMapRenderer.getNodes(), links: []});
+    }
+    
+    function exitFullscreen() {
+        mindmapContainer.classList.remove('fullscreen');
+        fullscreenToggle.textContent = '⛶';
+        fullscreenToggle.title = 'Enter fullscreen';
+        
+        // Redraw the mindmap to fit the normal size
+        const svg = document.getElementById('mindmap');
+        MindMapRenderer.init(svg);
+        MindMapRenderer.render({nodes: MindMapRenderer.getNodes(), links: []});
+    }
+    
+    fullscreenToggle.addEventListener('click', function() {
+        if (mindmapContainer.classList.contains('fullscreen')) {
+            exitFullscreen();
+        } else {
+            enterFullscreen();
+        }
+    });
+    
+    // Add exit fullscreen button functionality
+    fullscreenExit.addEventListener('click', exitFullscreen);
+    
+    // Also exit fullscreen when ESC key is pressed
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && mindmapContainer.classList.contains('fullscreen')) {
+            exitFullscreen();
+            event.preventDefault(); // Prevent other ESC handlers
+        }
+    });
+    
+    // Setup bubble size slider
+    const bubbleSizeSlider = document.getElementById('bubble-size');
+    const sizeValueDisplay = document.getElementById('size-value');
+    
+    bubbleSizeSlider.addEventListener('input', function() {
+        const newSize = this.value;
+        sizeValueDisplay.textContent = `${newSize}px`;
+        MindMapRenderer.setBubbleSize(newSize);
+    });
+});
